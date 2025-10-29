@@ -229,6 +229,16 @@ class Content:
         """Returns the URL, formatted with the proper values"""
         metadata = copy.copy(self.metadata)
         path = self.metadata.get("path", self.get_relative_source_path())
+        # logger.info("%s %s %s %s %s (%s) %s (%s)" % (
+        #     path_to_url(path),
+        #     getattr(self, "slug", ""),
+        #     getattr(self, "lang", "en"),
+        #     getattr(self, "date", datetime.datetime.now()),
+        #     self.author,
+        #     type(self.author),
+        #     self.category,
+        #     type(self.category),
+        # ))
         metadata.update(
             {
                 "path": path_to_url(path),

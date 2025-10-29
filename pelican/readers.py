@@ -695,7 +695,10 @@ class Readers(FileStampDataCacher):
         """Log a warning if a file is processed by a disabled reader."""
         reader = self.disabled_readers.get(file_suffix(source_path), None)
         if reader:
-            logger.warning(f"{source_path}: {reader.disabled_message()}")
+            logger.warning(
+                f"{source_path}: {reader.disabled_message()}",
+                extra={"limit_msg": "Other files attempted to be processed by a disabled reader."},
+            )
 
 
 def find_empty_alt(content, path):
@@ -808,6 +811,7 @@ def parse_path_metadata(source_path, settings=None, process=None):
             checks.append((settings.get(key, None), data))
         if settings.get("USE_FOLDER_AS_CATEGORY", None):
             checks.append(("(?P<category>.*)", subdir))
+        # logging.warning(f"{checks=}")
         for regexp, data in checks:
             if regexp and data:
                 match = re.match(regexp, data)
@@ -819,4 +823,5 @@ def parse_path_metadata(source_path, settings=None, process=None):
                             if process:
                                 v = process(k, v)
                             metadata[k] = v
+    # logging.warning(f"{metadata=}")
     return metadata

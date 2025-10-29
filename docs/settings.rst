@@ -889,22 +889,38 @@ Metadata
    The default metadata you want to use for all articles and pages. The default
    is ``{}``.
 
-.. data:: FILENAME_METADATA
+.. data:: FILENAME_METADATA = r"(?P<date>\d{4}-\d{2}-\d{2}).*"
 
    The regexp that will be used to extract any metadata from the filename. All
    named groups that are matched will be set in the metadata object.  The
    default value will only extract the date from the filename.
 
-   For example, to extract both the date and the slug::
+   For example, if your source file were titled
+   ``2023-04-30_blog-article.md``, you could extract both the date and the
+   slug::
 
-      FILENAME_METADATA = r'(?P<date>\d{4}-\d{2}-\d{2})_(?P<slug>.*)'
+      FILENAME_METADATA = r"(?P<date>\d{4}-\d{2}-\d{2})_(?P<slug>.*)"
+
+   giving you a date of *April 30, 2023* and a slug of *blog_article*.
 
    See also ``SLUGIFY_SOURCE``. The default is ``r'(?P<date>\d{4}-\d{2}-\d{2}).*'``.
 
-.. data:: PATH_METADATA
+   See also, ``FILENAME_METADATA``.
+
+.. data:: PATH_METADATA = ''
 
    Like ``FILENAME_METADATA``, but parsed from a page's full path relative to
-   the content source directory. The default is ``''``.
+   the content source directory, include the source filename.
+
+   For example, if your source files were stored in folders by year and then my
+   month, with the filename being the day of the month, (e.g.
+   ``2023/04/30.rst``) you could extract that with::
+
+      PATH_METADATA = r"(?P<date>\d{4}/\d{2}/\d{2}).*"
+
+   (The above works on Windows as well.)
+
+   See also ``FILENAME_METADATA``.
 
 .. data:: EXTRA_PATH_METADATA
 
@@ -939,7 +955,7 @@ file:
 
 .. parsed-literal::
 
-    # Take advantage of the following defaults
+    # Take advantage of the following defaults:
     # STATIC_SAVE_AS = '{path}'
     # STATIC_URL = '{path}'
     STATIC_PATHS = [

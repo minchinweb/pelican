@@ -63,6 +63,7 @@ class Pelican:
 
         self.init_path()
         self.init_plugins()
+        logger.debug("Signal initialized.send()")
         signals.initialized.send(self)
 
     def init_path(self):
@@ -143,6 +144,7 @@ class Pelican:
             if hasattr(p, "generate_output"):
                 p.generate_output(writer)
 
+        logger.debug("Signal finalized.send()")
         signals.finalized.send(self)
 
         articles_generator = next(

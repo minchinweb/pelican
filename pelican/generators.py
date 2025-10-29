@@ -567,8 +567,10 @@ class ArticlesGenerator(CachingGenerator):
 
     def generate_tags(self, write):
         """Generate Tags pages."""
+        logger.info("tags are %s" % ([tag for tag, _ in self.tags.items()]))
         tag_template = self.get_template("tag")
         for tag, articles in self.tags.items():
+            logger.info('Writing tag "%s", count %d' % (tag, len(articles)))
             dates = [article for article in self.dates if article in articles]
             try:
                 write(
