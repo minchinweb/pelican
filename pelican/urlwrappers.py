@@ -36,6 +36,7 @@ class URLWrapper:
                 class_key, self.settings.get("SLUG_REGEX_SUBSTITUTIONS", [])
             )
             preserve_case = self.settings.get("SLUGIFY_PRESERVE_CASE", False)
+
             self._slug = slugify(
                 self.name,
                 regex_subs=regex_subs,
@@ -43,6 +44,11 @@ class URLWrapper:
                 use_unicode=self.settings.get("SLUGIFY_USE_UNICODE", False),
             )
             if not self._slug:
+
+                # print(f"{class_key=}")
+                # print(f"{regex_subs=}")
+                # print(f"{preserve_case=}")
+
                 logger.warning(
                     'Unable to generate valid slug for %s "%s".',
                     self.__class__.__name__,
