@@ -302,9 +302,21 @@ class Content:
                         path = self.get_relative_source_path(  # type: ignore
                             os.path.join(self.relative_dir, path)
                         )
-                    return self._context[key].get(path, None)
+                    try:
+                        return self._context[key].get(path, None)
+                    except KeyError as e:
+                        logging.debug("Unable to find the Key we need...")
+                        print(f"{self=}")
+                        print(f"{key=}")
+                        print(f"{path=}")
+                        from pprint import pprint
+                        print("self._context=")
+                        pprint(self._context)
+                        print(f"{self.title=}")
+                        raise e
 
                 # try path
+                logging.debug(f"_find_path({url.path=})")
                 result = _find_path(url.path)
                 if result is not None:
                     return result
@@ -339,6 +351,8 @@ class Content:
                 key = "generated_content"
             else:
                 key = "static_content"
+
+            logging.debug(f"_get_linked_content({key=}, {value=})")
 
             linked_content = _get_linked_content(key, value)
             if linked_content:
@@ -435,10 +449,16 @@ class Content:
             content = self._get_content()
         else:
             content = self._content
+
+        logging.debug(f'self._update_content({content=}, {siteurl=})  {hasattr(self, "_get_content")=}')
+
         return self._update_content(content, siteurl)
 
     @property
     def content(self) -> str:
+        logger.debug(f"*** {self._context=}")
+        logger.debug(f"*** {self._content=}")
+
         return self.get_content(self.get_siteurl())
 
     @memoized

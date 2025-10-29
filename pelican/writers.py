@@ -212,6 +212,15 @@ class Writer:
             # set localsiteurl for context so that Contents can adjust links
             if localcontext["localsiteurl"]:
                 context["localsiteurl"] = localcontext["localsiteurl"]
+
+            logging.debug(f"{template=}")
+            logging.debug(f"{type(template)=}")
+            logging.debug('localcontext["generated_content"] =')
+            from pprint import pformat
+            print("writers @ 220")
+            logging.debug(pformat(localcontext["generated_content"]))
+            print("writers @ 222")
+
             output = template.render(localcontext)
             path = sanitised_join(output_path, name)
 
@@ -222,13 +231,17 @@ class Writer:
 
             with self._open_w(path, "utf-8", override=override) as f:
                 f.write(output)
-            logger.info("Writing %s", path)
+            logging.info("Writing %s", path)
 
             # Send a signal to say we're writing a file with some specific
             # local context.
             signals.content_written.send(path, context=localcontext)
 
         def _get_localcontext(context, name, kwargs, relative_urls):
+            from pprint import pformat
+            logging.debug('context["generated_content"] = ')
+            logging.debug(pformat(context["generated_content"]))
+
             localcontext = context.copy()
             localcontext["localsiteurl"] = localcontext.get("localsiteurl", None)
             if relative_urls:
@@ -237,6 +250,12 @@ class Writer:
                 localcontext["localsiteurl"] = relative_url
             localcontext["output_file"] = name
             localcontext.update(kwargs)
+
+            logging.debug('localcontext["generated_content"] =')
+            print("writer @ 255")
+            logging.debug(pformat(localcontext["generated_content"]))
+            print("writer @ 257")
+
             return localcontext
 
         if paginated is None:
@@ -292,4 +311,9 @@ class Writer:
         else:
             # no pagination
             localcontext = _get_localcontext(context, name, kwargs, relative_urls)
+
+            logging.debug('localcontext["generated_content"] =')
+            from pprint import pformat
+            logging.debug(pformat(localcontext["generated_content"]))
+
             _write_file(template, localcontext, self.output_path, name, override_output)

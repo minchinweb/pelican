@@ -213,6 +213,9 @@ class Generator:
         """
         location = content.get_relative_source_path()
         key = "static_content" if static else "generated_content"
+
+        # print(f"add_source_path {location=} {key=}")
+
         self.context[key][location] = content
 
     def _add_failed_source_path(self, path, static=False):
@@ -507,6 +510,11 @@ class ArticlesGenerator(CachingGenerator):
             self.hidden_articles,
         ):
             signals.article_generator_write_article.send(self, content=article)
+
+            from pprint import pformat
+            logger.debug(f'self.context["generated_content"] =')
+            logger.debug(pformat(self.context["generated_content"]))
+
             write(
                 article.save_as,
                 self.get_template(article.template),
